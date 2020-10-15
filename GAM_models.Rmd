@@ -1,5 +1,5 @@
 ---
-title: "02-refining models"
+title: "Phenotypic selection models"
 author: "Francisco E. Fonturbel"
 date: "5/October/2020"
 output: 
@@ -12,9 +12,9 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
-# Refining the original models
+## Testing new approaches to estimate phenotypic selection in wild plant populations
 
-This page basically contains an updated version of the original models. The main difference is that we got rid of `autocovariate models`, which showed a poor performance and seem to be little informative.
+This file contains the code to reproduce the statistical analyses presented in the paper.
 
 ```{r data, message=FALSE, warning=FALSE, include=FALSE}
 ##Libraries
