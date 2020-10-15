@@ -1,11 +1,11 @@
 # Accounting for relatedness and spatial structure to improve plant phenotypic selection in the wild :seedling:
 
-**Francisco E. Fontúrbel(1*), Pedro F. Ferrer(2), Caren Vega-Retter(3) & Rodrigo Medel(3)**
+**Francisco E. Fontúrbel(1), Pedro F. Ferrer(2), Caren Vega-Retter(3) & Rodrigo Medel(3)**
 
 (1) Instituto de Biología, Facultad de Ciencias, Pontificia Universidad Católica de Valparaíso, Valparaíso, Chile. ORCID 0000-0001-8585-2816
 (2) Instituto Oncológico, Fundación Arturo López Pérez, Santiago, Chile.
 (3) Departamento de Ciencias Ecológicas, Facultad de Ciencias, Universidad de Chile, Santiago, Chile.
-* Corresponding author: fonturbel@gmail.com
+Corresponding author: fonturbel@gmail.com
 
 This repository contains data and code related to a new approach on phenotypic selection gradient analysis for plants (using the hemiparasitic mistletoe _Tristerix corymbosus_ as a model), incorporating spatial and genetic data into classic Lande & Arnold equations. Here we developed new models and tested other approaches that were little useful.
 
