@@ -17,9 +17,13 @@ This repository contains data and code related to a new approach on phenotypic s
 Here we compare the performance of:
 
 (i) the classic Lande & Arnold model
+
 (ii) a model incorporating spatial structure
+
 (iii) a model incorporating the genetic structure, accounting for inter-individual relatedness
-(iv) a model incoporating both spatial and genetic terms.
+
+(iv) a model incoporating both spatial and genetic terms
+
 
 These models constitute a novel approach that could be applied to any wild plant population.
 
