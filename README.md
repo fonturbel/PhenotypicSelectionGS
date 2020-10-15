@@ -16,7 +16,7 @@ This repository contains data and code related to a new approach on phenotypic s
 ## The models proposed :nerd_face:
 Here we compare the performance of:
 
-(i) the classic model
+(i) the classic Lande & Arnold model
 (ii) a model incorporating spatial structure
 (iii) a model incorporating the genetic structure, accounting for inter-individual relatedness
 (iv) a model incoporating both spatial and genetic terms.
@@ -32,7 +32,7 @@ We also used genetic information (microsatellite markers) of the same _T. corymb
 
 ## Publication
 
-This manuscript has been sent to Evolutionary Ecology on June 22th 2020.
+This manuscript is under consideration for publication in **Evolutionary Ecology**.
 
 ## Terms of use
 
