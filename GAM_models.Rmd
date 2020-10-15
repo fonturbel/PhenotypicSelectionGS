@@ -1,0 +1,332 @@
+---
+title: "02-refining models"
+author: "Francisco E. Fonturbel"
+date: "5/October/2020"
+output: 
+  html_document:
+    includes:
+        after_body: footer.html
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Refining the original models
+
+This page basically contains an updated version of the original models. The main difference is that we got rid of `autocovariate models`, which showed a poor performance and seem to be little informative.
+
+```{r data, message=FALSE, warning=FALSE, include=FALSE}
+##Libraries
+library(mgcv)
+library(corrplot)
+library(stats)
+library(ncf)
+library(spdep)
+library(mpmcorrelogram)
+library(adegenet)
+library(PopGenReport)
+library(rsq)
+library(ggplot2)
+library(ggsci)
+library(GGally)
+library(mgcv.helper)
+
+#Adding multiplot capabilities
+source("multiplot.R")
+
+##Some ggplot2 grooming
+My_Theme = theme(
+  axis.title.x = element_text(size = 20,face="bold"),
+  axis.text.x = element_text(size = 18),
+  axis.text.y = element_text(size = 18),
+  axis.title.y = element_text(size = 20,face="bold"),
+  legend.text = element_text(size = 10),
+  legend.title = element_text(size = 10,face="bold"),
+  plot.title = element_text(size = 16,face="bold"),
+  panel.grid.major = element_blank(),
+  panel.grid.minor = element_blank(),
+  panel.background = element_rect(fill = "white"))
+
+##Loading data
+data_sci<-read.table(file='data/dataSciRep.txt',header=T,sep='',dec='.')
+#Loading microsatellite data (load QM69_microsats.gtx when asked)
+microsats<-read.genetix(file='data/QM69_microsat.gtx')
+data_rel<-gd.smouse(microsats)
+```
+
+## Correlation among traits
+
+First, we will examine the correlation among traits measured (based on their standardized values):
+
+```{r corr, echo=FALSE, message=FALSE, warning=FALSE}
+##Correlation version 2.0
+mm<-stats::cor(data_sci[,6:8], use="pairwise.complete.obs")
+cortrait<-ggcorr(data = NULL, cor_matrix = cor(mm, use = "everything")) +
+  My_Theme
+        
+multiplot(cortrait)
+```
+
+```{r corrs, message=FALSE, warning=FALSE, include=FALSE}
+fruit.cor<-cor(data_sci$fruitS, data_sci$seedS, method="pearson")
+sugar.cor<-cor(data_sci$fruitS, data_sci$sugarS, method="pearson")
+seed.cor<-cor(data_sci$seedS, data_sci$sugarS, method="pearson")
+```
+
+
+As we can see here, those fruit traits present an important correlation, which makes sense from the biological point of view.
+
+Fruit and seed size are **positively correlated** (i.e., larger fruits contain larger seeds), with a Pearson correlation coefficient of `r round(fruit.cor,3)`. On the contrary, fruit size and sugar content are **negatively correlated** (i.e., larger fruits contain less sugar concentration), with a Pearson correlation coefficient of `r round(sugar.cor,3)`. There is also a correlation between seed size and sugar content with a Pearson correlation coefficient of `r round(seed.cor,3)`, but maybe it is biologically meaningless...
+
+### Trait relationships with fitness (w)
+
+```{r echo=FALSE, message=FALSE, warning=FALSE, fig.width=8, fig.height=12}
+plot.ws<-ggplot(data = data_sci, aes(x = seedS, y = w)) +
+  geom_smooth(method = "glm", size = 1, span = 0.75, col = "red") +
+  labs(x="Seed size", y="Relative fitness (w)") +
+  theme_classic() +
+  My_Theme
+plot.wf<-ggplot(data = data_sci, aes(x = fruitS, y = w)) +
+  geom_smooth(method = "glm", size = 1, span = 0.75, col = "blue") +
+  labs(x="Fruit size", y="Relative fitness (w)") +
+  theme_classic() +
+  My_Theme
+plot.wz<-ggplot(data = data_sci, aes(x = sugarS, y = w)) +
+  geom_smooth(method = "glm", size = 1, span = 0.75, col = "chartreuse3") +
+  labs(x="Sugar content", y="Relative fitness (w)") +
+  theme_classic() +
+  My_Theme
+
+multiplot(plot.ws, plot.wf, plot.wz, cols = 1)
+```
+
+## Multidimensional Scaling
+
+Now we will conduct a Multidimensional Scaling (MDS) Analysis (after Gower,1966) to summarize relatedness data in two dimensions.
+
+```{r mds, echo=FALSE, message=FALSE, warning=FALSE}
+##Multidimensional Scaling (MDS) or Principal Coordinates Analysis (Gower,1966)
+mds <- cmdscale((data_rel), k = 2)
+mds.plot<-ggplot(data = data_sci, aes(x = mds[,1], y = mds[,2])) +
+  geom_point(col = "blueviolet", size = 3) +
+  labs(x="MDS 1", y="MDS 2") +
+  theme_classic() +
+  My_Theme
+mds.plot
+```
+
+This MDS vector will be used in further analyses to take the genetic component into account.
+
+# Models
+## GAM models
+
+The first approach that we will try is based on Generalized Additive Models `gam` that include the elements of Lande & Arnold's equation plus two splines: one to take the space into account and the other to take the inter-individual relatedness into account.
+
+```{r gam, message=FALSE, warning=FALSE, include=FALSE}
+##GAM Models
+model1<-gam(w ~ fruitS+seedS+sugarS,data=data_sci,family=gaussian)
+model2<-gam(w ~ fruitS+seedS+sugarS+s(x,y,k=10),data=data_sci,family=gaussian)
+model3<-gam(w ~ fruitS+seedS+sugarS+s(mds[,1],mds[,2],k=7),data=data_sci,family=gaussian)
+model4<-gam(w ~ fruitS+seedS+sugarS+s(x,y,k=10)+s(mds[,1],mds[,2],k=8),data=data_sci,family=gaussian)
+
+##BIC
+#anova(model1,model2,model3,model4)
+#BIC(model1,model2,model3,model4)
+
+##Residuals of GAM
+res1<-residuals(model1)
+res2<-residuals(model2)
+res3<-residuals(model3)
+res4<-residuals(model4)
+
+##Residual splines of GAM
+cres1<-spline.correlog(x=data_sci$x,y=data_sci$y,z=res1, resamp=1000)
+cres2<-spline.correlog(x=data_sci$x,y=data_sci$y,z=res2, resamp=1000)
+cres3<-spline.correlog(x=data_sci$x,y=data_sci$y,z=res3, resamp=1000)
+cres4<-spline.correlog(x=data_sci$x,y=data_sci$y,z=res4, resamp=1000)
+```
+
+**Classic model**
+
+```{r model1, echo=FALSE, message=FALSE, warning=FALSE}
+summary(model1)
+```
+
+**Spatial model**
+
+```{r model2, echo=FALSE, message=FALSE, warning=FALSE}
+summary(model2)
+```
+
+**Genetic model**
+
+```{r model3, echo=FALSE, message=FALSE, warning=FALSE}
+summary(model3)
+```
+
+**Spatial and genetic model**
+
+```{r model4, echo=FALSE, message=FALSE, warning=FALSE}
+summary(model4)
+```
+
+**Model comparison:**
+
+```{r gam_perf, echo=FALSE, message=FALSE, warning=FALSE}
+anova(model1,model2,model3,model4)
+BIC(model1,model2,model3,model4)
+```
+
+## Selection gradients
+
+Now we'll use the `termplot` function to plot selection gradients.
+
+### Classic model
+
+```{r term1, echo=FALSE, message=FALSE, warning=FALSE}
+termplot(model1, rug = TRUE, se = TRUE, col.se = "gray", col.term = "black", lwd.term = 3, lwd.se = 2)
+```
+
+### Spatial model
+
+```{r term2, echo=FALSE, message=FALSE, warning=FALSE}
+termplot(model2, rug = TRUE, se = TRUE, col.se = "gray", col.term = "black", lwd.term = 3, lwd.se = 2)
+```
+
+### Genetic model
+
+```{r term3, echo=FALSE, message=FALSE, warning=FALSE}
+termplot(model3, rug = TRUE, se = TRUE, col.se = "gray", col.term = "black", lwd.term = 3, lwd.se = 2)
+```
+
+### Spatial + genetic model
+
+```{r term4, echo=FALSE, message=FALSE, warning=FALSE}
+termplot(model4, rug = TRUE, se = TRUE, col.se = "gray", col.term = "black", lwd.term = 3, lwd.se = 2)
+```
+
+## GAM check
+
+We will use the `gam.check` function to see how good (or bad) our models are bot overfitted (i.e., too many parameters for the data) and how residuals are behaving.
+
+### Classic model
+
+```{r check1, echo=FALSE, message=FALSE, warning=FALSE}
+gam.check(model1, old.style = TRUE, k.rep = 1000)
+```
+
+### Spatial model
+
+```{r check2, echo=FALSE, message=FALSE, warning=FALSE}
+gam.check(model2, old.style = TRUE, k.rep = 1000)
+```
+
+### Genetic model
+
+```{r check3, echo=FALSE, message=FALSE, warning=FALSE}
+gam.check(model3, old.style = TRUE, k.rep = 1000)
+```
+
+### Spatial + genetic model
+
+```{r check4, echo=FALSE, message=FALSE, warning=FALSE}
+gam.check(model4, old.style = TRUE, k.rep = 1000)
+```
+
+## Assessing multicollinearity
+
+To be sure that our results are not influenced by strong multicollinearity, we performed three tests: (1) estimating confidence intervals, (2) estimating the variance inflation factors (VIF), and (3) a `concurvity` analysis (except for the classic model).
+
+**About concurvity:** Concurvity occurs when some smooth term in a model could be approximated by one or more of the other smooth terms in the model. This is often the case when a smooth of space is included in a model, along with smooths of other covariates that also vary more or less smoothly in space. Similarly it tends to be an issue in models including a smooth of time, along with smooths of other time varying covariates.
+
+Concurvity can be viewed as a generalization of co-linearity, and causes similar problems of interpretation. It can also make estimates somewhat unstable (so that they become sensitive to apparently innocuous modelling details, for example).
+
+This routine computes three related indices of concurvity, all bounded between 0 and 1, with 0 indicating no problem, and 1 indicating total lack of identifiability. The three indices are all based on the idea that a smooth term, f, in the model can be decomposed into a part, g, that lies entirely in the space of one or more other terms in the model, and a remainder part that is completely within the term's own space. If g makes up a large part of f then there is a concurvity problem. The indices used are all based on the square of ||g||/||f||, that is the ratio of the squared Euclidean norms of the vectors of f and g evaluated at the observed covariate values.
+
+### Classic model
+
+```{r mcol1, echo=FALSE, message=FALSE, warning=FALSE}
+confint(model1)
+vif.gam(model1)
+```
+
+### Spatial model
+
+```{r mcol2, echo=FALSE, message=FALSE, warning=FALSE}
+confint(model2)
+vif.gam(model2)
+concurvity(model2)
+```
+
+### Genetic model
+
+```{r mcol3, echo=FALSE, message=FALSE, warning=FALSE}
+confint(model3)
+vif.gam(model3)
+concurvity(model3)
+```
+
+### Spatial + genetic model
+
+```{r mcol4, echo=FALSE, message=FALSE, warning=FALSE}
+confint(model4)
+vif.gam(model4)
+concurvity(model4)
+```
+
+## Autocorrelation plots
+
+```{r gam_plots, echo=FALSE, fig.width=8, message=FALSE, warning=FALSE}
+###Respective plots of GAM
+par(mfrow=c(2,2))
+plot(cres1, main="(a) Standard model")
+plot(cres2, main="(b) Spatial model")
+plot(cres3, main="(c) Genetic model")
+plot(cres4, main="(d) Spatial and genetic model")
+par(mfrow=c(1,1))
+
+#Export in 6x8 landscape mode
+
+par(mfrow=c(1,2))
+plot(correlog(data_sci$x,data_sci$y,data_sci$w,increment=2000))
+plot(correlog(mds[,1],mds[,2],data_sci$w,increment=3))
+par(mfrow=c(1,1))
+```
+
+### Mantel partial correlograms
+
+Testing significance using Mantel partial correlograms:
+
+```{r mpm, message=FALSE, warning=FALSE, include=FALSE, echo=FALSE}
+xy<-cbind(data_sci$x,data_sci$y)
+mdist<-dist(xy)
+
+#Making distance matrices upon residuals
+mres1<-dist(res1)
+mres2<-dist(res2)
+mres3<-dist(res3)
+mres4<-dist(res4)
+
+mpm_c1<-mpmcorrelogram(mres1,mdist,method="pearson",permutations=10000)
+mpm_c2<-mpmcorrelogram(mres2,mdist,method="pearson",permutations=10000)
+mpm_c3<-mpmcorrelogram(mres3,mdist,method="pearson",permutations=10000)
+mpm_c4<-mpmcorrelogram(mres4,mdist,method="pearson",permutations=10000)
+```
+
+```{r mpm_plots, echo=FALSE, message=FALSE, warning=FALSE}
+par(mfrow=c(2,2))
+plot(mpm_c1, xlab="Distance classes",main="(a) Standard model")
+plot(mpm_c2, xlab="Distance classes",main="(b) Spatial model")
+plot(mpm_c3, xlab="Distance classes",main="(c) Genetic model")
+plot(mpm_c4, xlab="Distance classes",main="(d) Spatial and genetic model")
+par(mfrow=c(1,1))
+```
+
+Oh boy! the genetic model deals **better** with autocorrelation than the spatial model! that's very interesting!
+
+## Session
+
+```{r session, echo=T}
+sessionInfo()
+```
