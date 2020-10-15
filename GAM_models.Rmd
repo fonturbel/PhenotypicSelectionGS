@@ -206,6 +206,8 @@ termplot(model3, rug = TRUE, se = TRUE, col.se = "gray", col.term = "black", lwd
 termplot(model4, rug = TRUE, se = TRUE, col.se = "gray", col.term = "black", lwd.term = 3, lwd.se = 2)
 ```
 
+**Note:** These plots can be found in the _termplot_ folder.
+
 ## GAM check
 
 We will use the `gam.check` function to see how good (or bad) our models are bot overfitted (i.e., too many parameters for the data) and how residuals are behaving.
