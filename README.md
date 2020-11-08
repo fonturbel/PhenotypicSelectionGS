@@ -36,7 +36,7 @@ We also used genetic information (microsatellite markers) of the same _T. corymb
 
 ## Publication
 
-This manuscript is going to be published soon in **Evolutionary Ecology**.
+This manuscript is going to be published soon in **Evolutionary Ecology**. https://doi.org/10.1007/s10682-020-10089-3
 
 ## Terms of use
 
