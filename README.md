@@ -37,11 +37,11 @@ To test our models we are using an existing dataset on  _Tristerix corymbosus_ t
 
 We also used genetic information (microsatellite markers) of the same _T. corymbosus_ plants from [another paper](https://doi.org/10.1016/j.scitotenv.2018.10.125). Our [dataset](https://doi.org/10.6084/m9.figshare.4728721) contains ten microsatellite markers that can be used to estimate inter-individual relatedness.
 
-## Publication
+## Publication :books:
 
 Fontúrbel, F.E., P.F. Ferrer, C. Vega-Retter & R. Medel. Accounting for relatedness and spatial structure to improve plant phenotypic selection in the wild. **Evolutionary Ecology** (in press). https://doi.org/10.1007/s10682-020-10089-3
 
-## Terms of use
+## Terms of use :warning:
 
 The information contained in this repository can be freely used under the sole condition of acknowledging the authors and give the respective credit.
 
