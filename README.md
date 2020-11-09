@@ -39,7 +39,7 @@ We also used genetic information (microsatellite markers) of the same _T. corymb
 
 ## Publication
 
-This manuscript is going to be published soon in **Evolutionary Ecology**. https://doi.org/10.1007/s10682-020-10089-3
+Fontúrbel, F.E., P.F. Ferrer, C. Vega-Retter & R. Medel. Accounting for relatedness and spatial structure to improve plant phenotypic selection in the wild. **Evolutionary Ecology** (in press). https://doi.org/10.1007/s10682-020-10089-3
 
 ## Terms of use
 
