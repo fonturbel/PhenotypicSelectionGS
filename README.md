@@ -1,6 +1,6 @@
 # Accounting for relatedness and spatial structure to improve plant phenotypic selection in the wild :seedling:
 
-[![DOI](https://zenodo.org/badge/304342809.svg)](https://zenodo.org/badge/latestdoi/304342809)
+[![DOI](https://zenodo.org/badge/304342809.svg)](https://zenodo.org/badge/latestdoi/304342809) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](https://www.repostatus.org/badges/latest/active.svg)](https://www.repostatus.org/#active)
 
 
 **Francisco E. Fontúrbel(1), Pedro F. Ferrer(2), Caren Vega-Retter(3) & Rodrigo Medel(3)**
