@@ -1,5 +1,8 @@
 # Accounting for relatedness and spatial structure to improve plant phenotypic selection in the wild :seedling:
 
+[![DOI](https://zenodo.org/badge/304342809.svg)](https://zenodo.org/badge/latestdoi/304342809)
+
+
 **Francisco E. Fontúrbel(1), Pedro F. Ferrer(2), Caren Vega-Retter(3) & Rodrigo Medel(3)**
 
 (1) Instituto de Biología, Facultad de Ciencias, Pontificia Universidad Católica de Valparaíso, Valparaíso, Chile. https://orcid.org/0000-0001-8585-2816
