@@ -30,6 +30,7 @@ Here we compare the performance of:
 
 These models constitute a novel approach that could be applied to any wild plant population.
 
+
 ## The study model :leaves:
 To test our models we are using an existing dataset on  _Tristerix corymbosus_ that was previously used to estimate phenotypic selection on three friuit traits (i.e., fruit size, seed size, and sugar content). Those results can be found in [this paper](https://www.nature.com/articles/srep45371) and the dataset is freely available at the [figshare repository](http://dx.doi.org/10.6084/m9.figshare.4614769).
 
@@ -37,9 +38,11 @@ To test our models we are using an existing dataset on  _Tristerix corymbosus_ t
 
 We also used genetic information (microsatellite markers) of the same _T. corymbosus_ plants from [another paper](https://doi.org/10.1016/j.scitotenv.2018.10.125). Our [dataset](https://doi.org/10.6084/m9.figshare.4728721) contains ten microsatellite markers that can be used to estimate inter-individual relatedness.
 
+
 ## Publication :books:
 
 Fontúrbel, F.E., P.F. Ferrer, C. Vega-Retter & R. Medel. 2021. Accounting for relatedness and spatial structure to improve plant phenotypic selection in the wild. **Evolutionary Ecology** 35(1): 15-26. https://doi.org/10.1007/s10682-020-10089-3
+
 
 ## Terms of use :warning:
 
